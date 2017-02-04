@@ -1,0 +1,50 @@
+# -*- coding: utf-8 -*-
+
+import uzupelnienia
+import sqlite3
+import unittest
+
+db_path = 'budowa12.db'
+
+class RepositoryTest(unittest.TestCase):
+
+    def setUp(self):
+        conn = sqlite3.connect(db_path)
+        c = conn.cursor()
+        c.execute('DELETE FROM Pracownicy')
+        c.execute('DELETE FROM Budowa')
+        c.execute('''INSERT INTO Budowa (id, wpis_date, adres) VALUES(1, '2016-01-01', 'mistrzowska')''')
+        c.execute('''INSERT INTO Pracownicy (name, nazwisko, numer, ulica, nrdomu, nrmieszkania, miasto, budowa_id) VALUES("GOSCU", 'Trybala', 1,'gorna', '21', '1', 'Gdansk')''')
+        c.execute('''INSERT INTO Pracownicy (name, nazwisko, numer, ulica, nrdomu, nrmieszkania, miasto, budowa_id) VALUES("GOSCU", 'Trybala', 1,'gorna', '21', '1', 'Gdansk')''')
+        conn.commit()
+        conn.commit()
+        conn.close()
+
+    def tearDown(self):
+        conn = sqlite3.connect(db_path)
+        c = conn.cursor()
+        c.execute('DELETE FROM Pracownicy')
+        c.execute('DELETE FROM Budowa')
+        conn.commit()
+        conn.close()
+
+    def testGetByIdInstance(self):
+        budowa = repository.BudowaRepository().getById(1)
+        self.assertIsInstance(budowa, repository.Budowa, "Objekt nie jest klasy Budowa")
+
+    def testGetByIdNotFound(self):
+        self.assertEqual(repository.BudowaRepository().getById(22),
+                None, "Powinno wyjść None")
+
+    def testGetByIdPracownicyLen(self):
+        self.assertEqual(len(repository.PracownicyRepository().getById(1).pracownicy),
+                2, "Powinno wyjść 2")
+
+    def testDeleteNotFound(self):
+        self.assertRaises(repository.RepositoryException,
+                repository.BudowaRepository().delete, 22)
+
+
+
+if __name__ == "__main__":
+    unittest.main()
