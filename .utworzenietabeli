@@ -1,0 +1,32 @@
+# -*- coding: utf-8 -*-
+
+import sqlite3
+
+
+db_path = 'budowa12.db'
+conn = sqlite3.connect(db_path)
+
+c = conn.cursor()
+#
+# Tabele
+#
+c.execute('''
+          CREATE TABLE Budowa
+          ( id INTEGER PRIMARY KEY,
+            wpis_date DATE NOT NULL,
+            adres VARCHAR (100)
+          )
+          ''')
+c.execute('''
+          CREATE TABLE Pracownicy
+          ( name VARCHAR(100),
+            nazwisko VARCHAR(100),
+            numer NUMERIC NOT NULL,
+            ulica VARCHAR(100),
+            nrdomu VARCHAR(10),
+            nrmieszkania VARCHAR(10),
+            miasto VARCHAR(100),
+            Budowa_id INTEGER,
+           FOREIGN KEY(Budowa_id) REFERENCES Budowa(id),
+           PRIMARY KEY (name, Budowa_id))
+          ''')
